@@ -3,28 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="ae-version" content="lp-demo-q1-affordance-v3">
+<meta name="ae-version" content="lp-demo-q1-affordance-v4">
 <title>Dream Giver · 三問到人物</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Noto+Serif+TC:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--paper:#f7f1e8;--ink:#2a2420;--muted:#7a6f64;--line:rgba(42,36,32,.18);--gold:#c9a46a}
 *{box-sizing:border-box}
 html,body{margin:0;background:radial-gradient(ellipse 80% 60% at 50% 18%,rgba(232,213,176,.4),transparent 60%),var(--paper);color:var(--ink);font-family:"Noto Serif TC",serif}
-body{padding:22px 16px 64px}
+body{padding:16px 16px 64px}
 .wrap{max-width:640px;margin:0 auto}
-.kicker{font-size:11px;letter-spacing:.16em;color:var(--muted);margin:0 0 8px}
-h1{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:32px;margin:0 0 8px}
-.lead{color:var(--muted);line-height:1.65;margin:0 0 18px}
-.panel{background:rgba(255,252,248,.78);border:1px solid var(--line);border-radius:18px;padding:18px 16px;margin:0 0 14px}
-.step{font-size:12px;letter-spacing:.12em;color:var(--muted);margin:0 0 8px}
+.kicker{font-size:11px;letter-spacing:.16em;color:var(--muted);margin:0 0 6px}
+h1{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:28px;margin:0 0 6px;line-height:1.2}
+.lead{color:var(--muted);line-height:1.55;margin:0 0 12px;font-size:15px}
+.panel{background:rgba(255,252,248,.78);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 14px}
+.step{font-size:12px;letter-spacing:.12em;color:var(--muted);margin:0 0 6px}
 h2{font-size:20px;font-weight:500;margin:0 0 8px}
 .how{margin:0 0 12px;font-size:15px;line-height:1.5;color:#5c4030;background:rgba(201,164,106,.18);border-radius:10px;padding:10px 12px}
-.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:0 0 10px;padding:14px 14px;border-radius:14px;border:2px solid #c9a46a;background:#fff;font:500 17px/1.35 "Noto Serif TC",serif;color:#2a2420;-webkit-appearance:none;appearance:none;min-height:52px;cursor:pointer}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:0 0 10px;padding:14px;border-radius:14px;border:2px solid #c9a46a;background:#fff;font:500 17px/1.35 "Noto Serif TC",serif;color:#2a2420;-webkit-appearance:none;appearance:none;min-height:52px;cursor:pointer}
 .opt .n{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:#2a2420;color:#f7f1e8;font-size:13px;display:flex;align-items:center;justify-content:center}
 .opt .t{flex:1}
 .opt .go{color:#8a6a32;font-size:18px}
 .opt.on{background:rgba(201,164,106,.22)}
-.stage{position:relative;height:360px;border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#1a1620,#0e0c12);touch-action:none}
+.stage{position:relative;height:280px;border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#1a1620,#0e0c12);touch-action:none}
 canvas{position:absolute;inset:0;width:100%;height:100%}
 .hint{position:absolute;left:0;right:0;top:46%;text-align:center;color:rgba(240,226,196,.7);pointer-events:none}
 .seal{margin-top:12px;width:100%;height:48px;border:0;border-radius:999px;background:linear-gradient(180deg,#f0e2c4,#c9a46a);font:inherit;letter-spacing:.12em;color:#2a2420}
@@ -38,13 +38,14 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .row{display:flex;gap:8px;margin-top:12px}
 .ghost{flex:1;height:40px;border-radius:999px;border:1px solid var(--line);background:transparent;font:inherit}
 .hidden{display:none}
+@media (max-width:420px){h1{font-size:24px}.lead{font-size:14px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <p class="kicker">AE · DREAM GIVER · DEMO</p>
   <h1>先收成一張卡，再走出一個人物</h1>
-  <p class="lead">三個回答收成卡。卡接上這一瞬的光痕。收光之後，留下人物和 ID。</p>
+  <p class="lead" id="lead">三個回答收成卡。卡接上這一瞬的光痕。收光之後，留下人物和 ID。</p>
   <div id="ask" class="panel">
     <p class="step" id="stepLabel">1 / 3</p>
     <h2 id="q">最近最牽動你的是什麼？</h2>
@@ -55,14 +56,14 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
     <p class="step">卡片</p>
     <h2 id="cardTitle">這一張先留下</h2>
     <p id="cardBody"></p>
-    <button class="seal" id="toLight">接上 Lightprint</button>
+    <button class="seal" id="toLight" type="button">接上 Lightprint</button>
   </div>
   <div id="light" class="panel hidden">
     <p class="step">Lightprint</p>
     <h2>留下光痕，再收光</h2>
     <p class="how">用手指在下面畫一下。畫完，「收光」會亮。</p>
     <div class="stage" id="stage"><canvas id="cv"></canvas><p class="hint" id="hint">單指畫過</p></div>
-    <button class="seal" id="seal" disabled>收光</button>
+    <button class="seal" id="seal" type="button" disabled>收光</button>
   </div>
   <div id="born" class="panel card hidden">
     <p class="step">人物</p>
@@ -70,7 +71,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
     <h3 id="name">柔金守夜人</h3>
     <p class="id" id="pid">LP-</p>
     <p id="lore"></p>
-    <div class="row"><button class="ghost" id="again">再走一次</button></div>
+    <div class="row"><button class="ghost" id="again" type="button">再走一次</button></div>
   </div>
 </div>
 <script>
@@ -79,7 +80,7 @@ const QS = [
   {q:'它現在更像哪一種？', opts:['遇到了阻礙','正在發生','想把它留下'], how:'再點一個。點了就到最後一題。'},
   {q:'這一瞬靠近哪一種光？', opts:['柔金','靜藍','霧青'], how:'點一種光。點了就收成卡片。'}
 ];
-const NAMES = {柔金:['柔金守夜人','燭心旅人'],靜藍:['月藍靜影','深靛聽夜者'],霧青:['霧青呼吸','露邊的人影']};
+const NAMES = {柔金:['柔金守夜人','燭心旅人'],靜藍:['月藍靜影','深靜聽夜者'],霧青:['霧青呼吸','露邊的人影']};
 let i=0, answers=[], pts=[], mood='柔金';
 const $=id=>document.getElementById(id);
 function show(id){['ask','card','light','born'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
@@ -87,15 +88,23 @@ function renderQ(){
   $('stepLabel').textContent=(i+1)+' / 3';
   $('q').textContent=QS[i].q;
   $('how').textContent=QS[i].how;
-  $('opts').innerHTML='';
+  $('opts').replaceChildren();
   QS[i].opts.forEach((t,n)=>{
     const b=document.createElement('button');
     b.className='opt';
     b.type='button';
     b.setAttribute('aria-label','選擇：'+t);
-    b.innerHTML='<span class="n">'+(n+1)+'</span><span class="t"></span><span class="go">›</span>';
-    b.querySelector('.t').textContent=t;
-    b.onclick=()=>pick(t);
+    const num=document.createElement('span');
+    num.className='n';
+    num.textContent=String(n+1);
+    const label=document.createElement('span');
+    label.className='t';
+    label.textContent=t;
+    const go=document.createElement('span');
+    go.className='go';
+    go.textContent='›';
+    b.append(num,label,go);
+    b.addEventListener('click',()=>pick(t));
     $('opts').appendChild(b);
   });
 }
@@ -103,28 +112,33 @@ function pick(t){answers.push(t);if(i<2){i++;renderQ();return}mood=answers[2];$(
 function hash(s){let h=2166136261;for(let c of s){h^=c.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function idOf(seed){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let x=hash(seed),o='LP-';for(let n=0;n<8;n++){x=Math.imul(x^n,0x45d9f3b);o+=a[(x>>>0)%a.length]}return o}
 const cv=$('cv'),ctx=cv.getContext('2d');
-function fit(){const r=$('stage').getBoundingClientRect();cv.width=r.width;cv.height=r.height}
+function fit(){const r=$('stage').getBoundingClientRect();cv.width=Math.max(1,r.width);cv.height=Math.max(1,r.height)}
 fit();addEventListener('resize',fit);
 function dot(x,y){const g=ctx.createRadialGradient(x,y,0,x,y,36);g.addColorStop(0,'rgba(240,226,196,.55)');g.addColorStop(1,'rgba(240,226,196,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,36,0,7);ctx.fill();pts.push([x/cv.width,y/cv.height]);$('hint').style.opacity=0;$('seal').disabled=pts.length<2}
 let drawing=false;
-cv.onpointerdown=e=>{drawing=true;const r=cv.getBoundingClientRect();dot(e.clientX-r.left,e.clientY-r.top)};
-cv.onpointermove=e=>{if(!drawing)return;const r=cv.getBoundingClientRect();dot(e.clientX-r.left,e.clientY-r.top)};
-addEventListener('pointerup',()=>drawing=false);
-$('toLight').onclick=()=>show('light');
-$('seal').onclick=()=>{
+cv.addEventListener('pointerdown',e=>{drawing=true;cv.setPointerCapture(e.pointerId);const r=cv.getBoundingClientRect();dot(e.clientX-r.left,e.clientY-r.top)});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;const r=cv.getBoundingClientRect();dot(e.clientX-r.left,e.clientY-r.top)});
+addEventListener('pointerup',()=>{drawing=false});
+$('toLight').addEventListener('click',()=>{show('light');fit()});
+$('seal').addEventListener('click',()=>{
   const seed=JSON.stringify({answers,mood,n:pts.length});
   const id=idOf(seed);
   const name=NAMES[mood][hash(seed)%2];
   $('name').textContent=name;$('pid').textContent=id;
-  $('lore').textContent='卡上記著「'+answers[0]+'」。光痕收成'+mood+'，人物以此為 ID。';
+  $('lore').textContent='卡上記著「'+answers[0]+'」。光痕收成'+mood+'，人物以此為 ID。之後要再回來，就用這個 ID。';
   $('fig').style.filter=mood==='靜藍'?'hue-rotate(190deg)':'hue-rotate('+(mood==='霧青'?80:0)+'deg)';
-  localStorage.setItem('ae-lp-demo',JSON.stringify({id,name,answers,mood}));
+  try{localStorage.setItem('ae-lp-demo',JSON.stringify({id,name,answers,mood}))}catch(e){}
   show('born');
-};
-$('again').onclick=()=>{i=0;answers=[];pts=[];ctx.clearRect(0,0,cv.width,cv.height);$('seal').disabled=true;$('hint').style.opacity=1;renderQ();show('ask')};
-const saved=localStorage.getItem('ae-lp-demo');
-if(saved){$('lead').textContent+=' 上次留下 '+JSON.parse(saved).id+'。'}
+});
+$('again').addEventListener('click',()=>{i=0;answers=[];pts=[];ctx.clearRect(0,0,cv.width,cv.height);$('seal').disabled=true;$('hint').style.opacity=1;renderQ();show('ask')});
 renderQ();
+try{
+  const saved=localStorage.getItem('ae-lp-demo');
+  if(saved && $('lead')){
+    const prev=JSON.parse(saved);
+    if(prev && prev.id) $('lead').textContent+=' 上次留下 '+prev.id+'。';
+  }
+}catch(e){}
 </script>
 </body>
 </html>
